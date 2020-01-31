@@ -21,70 +21,77 @@ function start() {
             type: "list",
             message: "What would you like to do?",
             choices: [
-                "View All Employees",
-                // "View All Employees By Department",
-                // "View All Employees by Manager",
-                "Add an Employee",
-                "Remove Employee",
-                "Update Employee Role",
-                "Exit"
-                // "Update Employee Manager",
-                // "View All Roles"
+                    "Add a(n) Department/Employee/Role",
+                    "View all Departments/Roles/Employees",
+                    "Update all Departments/Roles/Employees",
+                    "Exit"
+                // "View All Employees",
+                // "Add an Employee",
+                // // "View All Employees By Department",
+                // // "View All Employees by Manager",
+                // // "Remove Employee",
+                // "Update Employee Role",
+                // // "Update Employee Manager",
+                // // "View All Roles"
             ]
         })
       
         .then(function (response) {
-            const action = data.action;
-            switch (answer.action) {
-                case "View All Employees":
-                    employeeSearch();
-                    break;
-
-                case "Add an Employee":
-                    employeeAdd();
-                    break;
-
-                case "Remove an Employee":
-                    employeeRemove();
-                    break;
-
-                case "Update Employee Role":
-                    employeeUpdate();
-                    break;
-
-                case "Exit":
-                    connection.end();
-                    break;
+            // add
+            if (response.action === "Add a(n) Department/Employee/Role") {
+                console.log(response.action + " selected!");
+                create()
             }
-        });
+            // view
+            else if (response.action === "View all Departments/Roles/Employees") {
+                console.log(response.action + " selected!");
+                viewInfo()
+            }
+            //update
+            else if (response.action === "Update all Departments/Roles/Employees") {
+                console.log(response.action + " selected!");
+                updateInfo()
+            }
+            //exit
+            else {
+                console.log(response.action + " selected!");
+                connection.end()
+            }
+        })
 }
-
+start();
 // Start the functions for each case
 
-function employeeSearch() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        console.table(res);
-
-    })
-}
-
-function employeeAdd() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        console.table(res);
-
-    })
-}
-
-function employeeRemove() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        console.table(res);
-
-    })
-}
-
-function employeeUpdate() {
-    connection.query("SELECT * FROM role", function (err, res) {
-        console.table(res);
-
+function add() {
+        inquirer.prompt([
+            {
+                name: 'add',
+                type: 'list',
+                message: 'What would you like to add to?',
+                choices: [
+                    "Employee",
+                    "Role",
+                    "Department",
+                    "Exit"
+                ]
+            
+    }]).then(function (response) {
+        // If you choose Employee the addEmployee function will begin
+        if (response.add === "Employee") {
+            createEmployee()
+        }
+        // If you choose Role the addRole function will begin
+        else if (response.add === "Role") {
+            createRole()
+        }
+        // If you choose Department addDepartment will begin
+        else if (response.add === "Department") {
+            createDepartment()
+        }
+        // If you choose Back the action() will take you back to the main menu
+        else {
+            console.log("Exit");
+            start()
+        }
     })
 }
