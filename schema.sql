@@ -13,7 +13,7 @@ PRIMARY KEY(id)
 
 CREATE TABLE role(
 id INTEGER auto_increment NOT NULL,
-title VARCHAR(30) NOT NULL,
+title VARCHAR(100) NOT NULL,
 salary DECIMAL NOT NULL,
 department_id INTEGER NOT NULL,
 constraint fk_department_id FOREIGN KEY (department_id) references department(id),
@@ -56,7 +56,7 @@ VALUES ("Assistant to the Worlds Best Boss", 63000, 2);
 INSERT into role (title, salary, department_id)
 VALUES ("Scott's Tots CEO", 55000, 3);
 INSERT into role (title, salary, department_id)
-VALUES ("Sales Lead", 60000, 4);
+VALUES ("THIS DOESN'T FUCKING WORK", 60000, 4);
 INSERT into role (title, salary, department_id)
 VALUES ("Secretary", 85000, 5);
 INSERT into role (title, salary, department_id)
