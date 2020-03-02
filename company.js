@@ -1,97 +1,139 @@
-const mysql = require("mysql");
-const inquirer = require("inquirer");
 
-var connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "Maggie512",
-    database: "companyDB"
-});
+var inquirer = require("inquirer");
+var connection = require('./connection');
+const viewOptions = [
+    "View Departments",
+    "View Roles",
+    "View Employees",
+    "Update Employee",
+    "Add Employee",
+    "exit"
+];
 
-connection.connect(function (err) {
-    if (err) throw err;
-    start();
-});
+const employeeOptions = [
+    "Michael Scott",
+    "Dwight Schrute",
+    "Jim Halpert",
+    "Pamela Beesly",
+    "Angela Martin",
+    "Kevin Malone",
+    "Creed Bratton",
+    "exit"
+];
 
-function start() {
+const updateOptions = [
+    "First Name",
+    "Last Name",
+    "Role",
+    "exit"
+];
+
+const addOptions = [
+    "Enter First Name",
+    "Enter Last Name",
+    "Enter Role",
+    "exit"
+];
+
+runSearch();
+
+function runSearch() {
     inquirer
         .prompt({
             name: "action",
             type: "list",
             message: "What would you like to do?",
-            choices: [
-                    "Add a(n) Department/Employee/Role",
-                    "View all Departments/Roles/Employees",
-                    "Update all Departments/Roles/Employees",
-                    "Exit"
-                // "View All Employees",
-                // "Add an Employee",
-                // // "View All Employees By Department",
-                // // "View All Employees by Manager",
-                // // "Remove Employee",
-                // "Update Employee Role",
-                // // "Update Employee Manager",
-                // // "View All Roles"
-            ]
+            choices: viewOptions
         })
-      
-        .then(function (response) {
-            // add
-            if (response.action === "Add a(n) Department/Employee/Role") {
-                console.log(response.action + " selected!");
-                create()
-            }
-            // view
-            else if (response.action === "View all Departments/Roles/Employees") {
-                console.log(response.action + " selected!");
-                viewInfo()
-            }
-            //update
-            else if (response.action === "Update all Departments/Roles/Employees") {
-                console.log(response.action + " selected!");
-                updateInfo()
-            }
-            //exit
-            else {
-                console.log(response.action + " selected!");
-                connection.end()
+        .then(function (answer) {
+            switch (answer.action) {
+                case viewOptions[0]:
+                    departmentView();
+                    break;
+
+                case viewOptions[1]:
+                    roleView();
+                    break;
+
+                case viewOptions[2]:
+                    employeeView();
+                    break;
+
+                case viewOptions[3]:
+                    updateEmployee();
+
+                case updateOptions[4]:
+                    connection.end();
+                    break
+
+                case addOptions[5]:
+                    connection.end();
+                    break
             }
         })
 }
-start();
-// Start the functions for each case
 
-function add() {
-        inquirer.prompt([
-            {
-                name: 'add',
-                type: 'list',
-                message: 'What would you like to add to?',
-                choices: [
-                    "Employee",
-                    "Role",
-                    "Department",
-                    "Exit"
-                ]
-            
-    }]).then(function (response) {
-        // If you choose Employee the addEmployee function will begin
-        if (response.add === "Employee") {
-            createEmployee()
-        }
-        // If you choose Role the addRole function will begin
-        else if (response.add === "Role") {
-            createRole()
-        }
-        // If you choose Department addDepartment will begin
-        else if (response.add === "Department") {
-            createDepartment()
-        }
-        // If you choose Back the action() will take you back to the main menu
-        else {
-            console.log("Exit");
-            start()
-        }
+
+
+function departmentView() {
+    var sqlStr = "SELECT * FROM department";
+    connection.query(sqlStr, function (err, result) {
+        if (err) throw err;
+
+        console.table(result)
+        runSearch();
     })
+}
+
+function employeeView() {
+    var sqlStr = "SELECT first_name, last_name, title, salary FROM employee ";
+    sqlStr += "LEFT JOIN role ";
+    sqlStr += "ON employee.role_id = role.id"
+    connection.query(sqlStr, function (err, result) {
+        if (err) throw err;
+
+        console.table(result)
+        runSearch();
+    })
+}
+
+function roleView() {
+    var sqlStr = "SELECT * FROM role";
+    connection.query(sqlStr, function (err, result) {
+        if (err) throw err;
+
+        console.table(result)
+        runSearch();
+    })
+}
+
+
+const updateEmployee = () => {
+
+    function runUpdateSearch() {
+        inquirer
+            .prompt({
+                name: "action",
+                type: "list",
+                message: "Which employee do you want to update?",
+                choices: employeeOptions
+            })
+           
+    }
+    runUpdateSearch();  
+}
+
+const addEmployee = () => {
+
+    function runAddEmployee() {
+        inquirer
+            .prompt({
+                name: "action",
+                type: "list",
+                message: "Please Enter New Employee Name",
+                choices: " "
+            })
+           
+    }
+    runAddEmployee();  
 }
